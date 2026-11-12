@@ -205,4 +205,4 @@ def populateBlocks():
                 Block(x, y, blockWidth, blockHeight, color)
             )
 
-    return blocks
+    return blocks 

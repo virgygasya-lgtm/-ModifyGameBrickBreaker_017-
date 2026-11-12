@@ -206,3 +206,26 @@ def populateBlocks():
             )
 
     return blocks 
+
+    hitSound = None
+breakSound = None
+
+try:
+    if pygame.mixer.get_init():
+        if os.path.exists("hit.wav"):
+            hitSound = pygame.mixer.Sound("hit.wav")
+
+        if os.path.exists("break.wav"):
+            breakSound = pygame.mixer.Sound("break.wav")
+except pygame.error:
+    pass
+
+
+def playHitSound():
+    if hitSound:
+        hitSound.play()
+
+
+def playBreakSound():
+    if breakSound:
+        breakSound.play()

@@ -1,3 +1,5 @@
+from py_compile import main
+
 import pygame
 import random
 import os
@@ -229,3 +231,135 @@ def playHitSound():
 def playBreakSound():
     if breakSound:
         breakSound.play()
+
+        def main():
+    running = True
+
+    lives = 5
+    score = 0
+
+    striker = Striker(
+        WIDTH // 2 - 50,
+        HEIGHT - 50,
+        100,
+        20,
+        10
+    )
+
+    ball = Ball(
+        WIDTH // 2,
+        HEIGHT - 100,
+        16,
+        5
+    )
+
+    blocks = populateBlocks()
+    strikerDirection = 0
+
+    while running:
+        screen.fill(BLACK)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    strikerDirection = -1
+                elif event.key == pygame.K_RIGHT:
+                    strikerDirection = 1
+
+            if event.type == pygame.KEYUP:
+                if event.key in (pygame.K_LEFT, pygame.K_RIGHT):
+                    strikerDirection = 0
+
+        # Score and lives
+        scoreText = font.render(
+            "SCORE: " + str(score), True, WHITE
+        )
+
+        livesText = font.render(
+            "LIVES: " + str(lives), True, GOLD
+        )
+
+        title = font.render(
+            "INTER MILAN EDITION", True, INTER_BLUE
+        )
+
+        screen.blit(scoreText, (15, 10))
+        screen.blit(livesText, (180, 10))
+        screen.blit(title, (380, 10))
+
+        if not blocks:
+            blocks = populateBlocks()
+
+        # Magnet collision
+        if collisionChecker(striker.getRect(), ball.getRect()):
+            if ball.yFac > 0:
+                ball.posy = striker.posy - ball.size / 2
+                ball.hit()
+                playHitSound()
+
+                center = striker.posx + striker.width / 2
+
+                if ball.posx < center:
+                    ball.xFac = -1
+                else:
+                    ball.xFac = 1
+
+        # Block collision
+        for block in blocks[:]:
+            if collisionChecker(block.getRect(), ball.getRect()):
+                ball.hit()
+                playHitSound()
+                block.hit()
+
+                if block.health <= 0:
+                    blocks.remove(block)
+                    score += 10
+                    playBreakSound()
+
+                break
+
+        # Update game objects
+        striker.update(strikerDirection)
+
+        if ball.update():
+            lives -= 1
+            ball.reset()
+
+        # Display blocks
+        for block in blocks:
+            block.display()
+
+        striker.display()
+        ball.display()
+
+        if lives <= 0:
+            screen.fill(BLACK)
+
+            gameOverText = bigFont.render(
+                "GAME OVER", True, RED
+            )
+
+            screen.blit(
+                gameOverText,
+                gameOverText.get_rect(
+                    center=(WIDTH // 2, HEIGHT // 2)
+                )
+            )
+
+            pygame.display.update()
+            pygame.time.delay(2000)
+
+            running = False
+
+        pygame.display.update()
+        clock.tick(FPS)
+
+
+if __name__ == "__main__":
+    main()
+    pygame.quit()
+
+    

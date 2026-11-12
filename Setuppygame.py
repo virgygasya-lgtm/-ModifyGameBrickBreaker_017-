@@ -18,4 +18,4 @@ clock = pygame.time.Clock()
 FPS = 30
 
 font = pygame.font.Font(None, 25)
-bigFont = pygame.font.Font(None, 45)
+bigFont = pygame.font.Font(None, 45) 

@@ -163,4 +163,46 @@ class Striker:
             self.size
         )
 
-    
+    class Block:
+
+    def __init__(self, x, y, width, height, color):
+        self.rect = pygame.Rect(x, y, width, height)
+        self.color = color
+        self.health = 100
+
+    def display(self):
+        if self.health > 0:
+            pygame.draw.rect(screen, self.color, self.rect)
+            pygame.draw.rect(screen, WHITE, self.rect, 2)
+
+            inner = self.rect.inflate(-10, -8)
+
+            if inner.width > 0 and inner.height > 0:
+                pygame.draw.rect(screen, GOLD, inner, 1)
+
+    def hit(self):
+        self.health -= 100
+
+    def getRect(self):
+        return self.rect
+
+
+def collisionChecker(rect1, rect2):
+    return rect1.colliderect(rect2)
+
+
+def populateBlocks():
+    blocks = []
+
+    blockWidth = 40
+    blockHeight = 20
+
+    for x in range(0, WIDTH - blockWidth + 1, 60):
+        for y in range(45, HEIGHT // 2, 35):
+            color = random.choice(BLOCK_COLORS)
+
+            blocks.append(
+                Block(x, y, blockWidth, blockHeight, color)
+            )
+
+    return blocks
